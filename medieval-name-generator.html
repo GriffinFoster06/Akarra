@@ -2,46 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Medieval Name Generator</title>
+    <title>Medieval European Name Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Leaflet CSS for Interactive Map -->
+    <!-- Leaflet CSS for Future Enhancements (Optional) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-sA+eCHLxXmkIrnD0CA9ApoJ0QYhcFkGJcD3I3v5bNm0="
           crossorigin=""/>
-    <!-- jsPDF for PDF Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-+83pvLJ9uYgh9hFLjdt7wEV0NRcX+V3m4GZwC12TS0LzS5U1tdw5p7MWmOeMKfSYrnniaROmH2Q+5pG0L3fHcA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- Leaflet JS for Interactive Map -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-o9N1j9OwyM6g+5TLARuUgNfW/Jm9U1qzLE1JH+EMJkM="
-            crossorigin=""></script>
     <style>
-        /* Root Variables */
+        /* Root Variables for Theming */
         :root {
-            --primary-color: #2980b9;
-            --secondary-color: #27ae60;
+            --primary-color: #2c3e50;
+            --secondary-color: #8e44ad;
             --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
             --text-color: #2c3e50;
-            --light-bg: #ecf0f1;
-            --hover-bg: #bdc3c7;
-            --border-color: #95a5a6;
-            --modal-bg: rgba(0, 0, 0, 0.5);
+            --button-bg: #3498db;
+            --button-text: #fff;
+            --border-color: #bdc3c7;
         }
 
         body.dark-mode {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
+            --primary-color: #ecf0f1;
+            --secondary-color: #9b59b6;
             --accent-color: #e74c3c;
+            --background-color: #2c3e50;
             --text-color: #ecf0f1;
-            --light-bg: #34495e;
-            --hover-bg: #2c3e50;
-            --border-color: #7f8c8d;
-            --modal-bg: rgba(255, 255, 255, 0.1);
+            --button-bg: #2980b9;
+            --button-text: #fff;
+            --border-color: #34495e;
         }
 
         /* General Styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
+            background-color: var(--background-color);
             color: var(--text-color);
             margin: 0;
             padding: 0;
@@ -49,12 +43,12 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 40px auto;
-            padding: 20px 40px;
+            padding: 20px 30px;
             background-color: #fff;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
             transition: background-color 0.3s;
         }
 
@@ -66,20 +60,19 @@
         h1 {
             text-align: center;
             margin-bottom: 20px;
-            font-size: 2.5em;
+            font-size: 2em;
             color: var(--primary-color);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         /* Dark Mode Toggle */
-        #darkModeToggle {
+        .toggle-container {
             display: flex;
-            align-items: center;
             justify-content: flex-end;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        #darkModeToggle input {
+        .toggle-container input {
             margin-right: 10px;
             transform: scale(1.2);
             cursor: pointer;
@@ -92,99 +85,29 @@
 
         .form-section h2 {
             margin-bottom: 10px;
-            font-size: 1.5em;
+            font-size: 1.4em;
             color: var(--secondary-color);
-        }
-
-        body.dark-mode .form-section h2 {
-            color: #ecf0f1;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: bold;
         }
 
-        select, input[type="number"], input[type="text"], textarea {
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-            width: 100%;
-            background-color: var(--light-bg);
-            color: var(--text-color);
-        }
-
-        body.dark-mode select,
-        body.dark-mode input[type="number"],
-        body.dark-mode input[type="text"],
-        body.dark-mode textarea {
-            background-color: #3b4a63;
-            color: #ecf0f1;
-            border-color: #7f8c8d;
-        }
-
-        select:focus, input[type="number"]:focus, input[type="text"]:focus, textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        /* Checkbox Groups */
-        .checkbox-group {
+        .checkbox-group, .theme-group {
             display: flex;
             flex-wrap: wrap;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background-color: var(--hover-bg);
-            transition: background-color 0.3s;
+            gap: 10px;
         }
 
-        body.dark-mode .checkbox-group {
-            background-color: #3b4a63;
-            border-color: #ecf0f1;
+        .checkbox-item, .theme-item {
+            width: 45%;
         }
 
-        .checkbox-item {
-            width: 30%;
-            margin-bottom: 10px;
-        }
-
-        .checkbox-item input {
+        input[type="checkbox"] {
             margin-right: 8px;
             cursor: pointer;
-        }
-
-        .checkbox-item label {
-            cursor: pointer;
-        }
-
-        /* Themes Section */
-        .themes-list {
-            display: flex;
-            flex-wrap: wrap;
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background-color: var(--hover-bg);
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .themes-list {
-            background-color: #3b4a63;
-            border-color: #ecf0f1;
-        }
-
-        .theme-item {
-            width: 45%;
-            margin-bottom: 10px;
         }
 
         /* Sliders */
@@ -207,26 +130,22 @@
             color: var(--secondary-color);
         }
 
-        body.dark-mode .slider-value {
-            color: #ecf0f1;
-        }
-
         /* Buttons */
         .buttons {
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         button {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             border: none;
             border-radius: 6px;
-            background-color: var(--primary-color);
-            color: #fff;
+            background-color: var(--button-bg);
+            color: var(--button-text);
             font-size: 1em;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -234,37 +153,23 @@
         }
 
         button:hover {
-            background-color: #1c5980;
-        }
-
-        button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        /* Export and Additional Buttons */
-        .export-buttons {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            background-color: darken(var(--button-bg), 10%);
         }
 
         /* Results Section */
         #results {
-            margin-top: 25px;
+            margin-top: 30px;
             padding: 20px;
-            background-color: #ecf0f1;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
             border-radius: 6px;
             min-height: 100px;
-            transition: background-color 0.3s;
-            max-height: 400px;
-            overflow-y: auto;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         body.dark-mode #results {
-            background-color: #3b4a63;
+            background-color: #2c3e50;
+            border-color: #34495e;
         }
 
         #results ul {
@@ -274,313 +179,112 @@
 
         #results li {
             margin-bottom: 8px;
-            position: relative;
-            padding-right: 25px;
-            cursor: pointer;
-            transition: background-color 0.2s;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        #results li:hover {
-            background-color: rgba(41, 128, 185, 0.1);
-        }
-
-        body.dark-mode #results li:hover {
-            background-color: rgba(236, 240, 241, 0.1);
-        }
-
-        #results li.favorite::after {
-            content: "★";
-            position: absolute;
-            right: 0;
-            color: gold;
-            font-size: 1.2em;
-        }
-
-        /* History Section */
-        #history {
-            margin-top: 30px;
-        }
-
-        #history h2 {
-            margin-bottom: 10px;
-            font-size: 1.8em;
-            color: var(--secondary-color);
-        }
-
-        body.dark-mode #history h2 {
-            color: #ecf0f1;
-        }
-
-        #historyList {
-            list-style-type: none;
-            padding-left: 0;
-        }
-
-        #historyList li {
-            background-color: var(--hover-bg);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode #historyList li {
-            background-color: #3b4a63;
-        }
-
-        #historyList li:hover {
-            background-color: var(--primary-color);
-            color: #fff;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: var(--modal-bg); /* Black w/ opacity */
-        }
-
-        .modal-content {
-            background-color: var(--light-bg);
-            margin: 5% auto; /* 5% from the top and centered */
-            padding: 30px;
-            border: 1px solid #888;
-            width: 90%; /* Could be more or less, depending on screen size */
-            border-radius: 8px;
-            position: relative;
-            max-width: 800px;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode .modal-content {
-            background-color: #34495e;
-            color: #ecf0f1;
-            border-color: #ecf0f1;
-        }
-
-        .close-modal {
-            color: #aaa;
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-modal:hover,
-        .close-modal:focus {
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 6px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 6px;
-        }
-
-        body.dark-mode ::-webkit-scrollbar-track {
-            background: #2c3e50;
-        }
-
-        body.dark-mode ::-webkit-scrollbar-thumb {
-            background: #7f8c8d;
+        /* Export Buttons */
+        .export-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         /* Search Bar */
-        #searchBar {
-            position: relative;
+        .search-bar {
             margin-bottom: 20px;
         }
 
-        #searchBar input {
+        .search-bar input {
             width: 100%;
-            padding: 12px 40px 12px 12px;
+            padding: 10px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
+            font-size: 1em;
             transition: border-color 0.3s;
-            background-color: var(--light-bg);
+            background-color: var(--background-color);
             color: var(--text-color);
         }
 
-        body.dark-mode #searchBar input {
-            background-color: #3b4a63;
+        body.dark-mode .search-bar input {
+            background-color: #34495e;
             color: #ecf0f1;
             border-color: #7f8c8d;
         }
 
-        #searchBar #searchIcon {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            pointer-events: none;
-            font-size: 1.2em;
-            color: var(--primary-color);
-        }
-
-        /* Interactive Map */
-        #map {
-            height: 400px;
-            margin-top: 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-        }
-
-        body.dark-mode #map {
-            border-color: #ecf0f1;
-        }
-
-        /* Character Profiles */
-        #profile {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #dfe6e9;
-            border-radius: 6px;
-            transition: background-color 0.3s;
-        }
-
-        body.dark-mode #profile {
-            background-color: #3b4a63;
-            color: #ecf0f1;
-        }
-
-        /* Preset Profiles */
-        .preset-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .preset-buttons button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            background-color: var(--accent-color);
-            color: #fff;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            min-width: 150px;
-        }
-
-        .preset-buttons button:hover {
-            background-color: #c0392b;
-        }
-
-        /* Family Generation */
-        .family-generation {
-            margin-top: 20px;
-        }
-
-        .family-generation button {
-            background-color: #27ae60;
-        }
-
-        .family-generation button:hover {
-            background-color: #1e8449;
-        }
-
-        /* Additional Features Styling */
-        /* Phonetic Pronunciation Button */
-        .pronunciation-btn {
-            margin-left: 10px;
-            background-color: #f39c12;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            color: #fff;
-            font-size: 0.9em;
-        }
-
-        .pronunciation-btn:hover {
-            background-color: #d35400;
+        .search-bar input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
         }
 
         /* Responsive Design */
-        @media (max-width: 1000px) {
-            #map {
-                height: 300px;
-            }
-        }
-
-        @media (max-width: 800px) {
-            .checkbox-item, .theme-item {
-                width: 45%;
-            }
-        }
-
         @media (max-width: 600px) {
             .checkbox-item, .theme-item {
                 width: 100%;
             }
 
-            h1 {
-                font-size: 2em;
-            }
-
             button {
-                font-size: 0.9em;
-                padding: 12px;
-                min-width: 100px;
+                min-width: 100%;
             }
 
-            .buttons, .export-buttons, .preset-buttons {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .export-buttons button,
-            .preset-buttons button {
-                margin-bottom: 10px;
+            .export-buttons button {
+                min-width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Medieval Name Generator</h1>
-        <div id="darkModeToggle">
+        <h1>Medieval European Name Generator</h1>
+        <div class="toggle-container">
             <input type="checkbox" id="toggleDarkMode" aria-label="Toggle Dark Mode">
             <label for="toggleDarkMode">Dark Mode</label>
         </div>
         <form id="nameForm">
+            <!-- Search Bar -->
+            <div class="form-section search-bar">
+                <input type="text" id="search" placeholder="Search generated names..." aria-label="Search Names">
+            </div>
+
             <!-- First Name Culture Selection -->
             <div class="form-section">
                 <h2>First Name Cultures</h2>
                 <div class="checkbox-group" role="group" aria-label="Select Cultures for First Names">
-                    <!-- Example Cultures -->
                     <div class="checkbox-item">
                         <input type="checkbox" id="culture_english_first" name="cultures_first" value="english">
                         <label for="culture_english_first">English</label>
                     </div>
-                    <!-- Add other cultures similarly -->
-                    <!-- ... -->
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_french_first" name="cultures_first" value="french">
+                        <label for="culture_french_first">French</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_german_first" name="cultures_first" value="german">
+                        <label for="culture_german_first">German</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_italian_first" name="cultures_first" value="italian">
+                        <label for="culture_italian_first">Italian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_spanish_first" name="cultures_first" value="spanish">
+                        <label for="culture_spanish_first">Spanish</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_norse_first" name="cultures_first" value="norse">
+                        <label for="culture_norse_first">Norse</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_greek_first" name="cultures_first" value="greek">
+                        <label for="culture_greek_first">Greek</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_celtic_first" name="cultures_first" value="celtic">
+                        <label for="culture_celtic_first">Celtic</label>
+                    </div>
                 </div>
             </div>
 
@@ -588,45 +292,62 @@
             <div class="form-section">
                 <h2>Last Name Cultures</h2>
                 <div class="checkbox-group" role="group" aria-label="Select Cultures for Last Names">
-                    <!-- Example Cultures -->
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_english_last" name="cultures_last" value="english">
+                        <label for="culture_english_last">English</label>
+                    </div>
                     <div class="checkbox-item">
                         <input type="checkbox" id="culture_french_last" name="cultures_last" value="french">
                         <label for="culture_french_last">French</label>
                     </div>
-                    <!-- Add other cultures similarly -->
-                    <!-- ... -->
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_german_last" name="cultures_last" value="german">
+                        <label for="culture_german_last">German</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_italian_last" name="cultures_last" value="italian">
+                        <label for="culture_italian_last">Italian</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_spanish_last" name="cultures_last" value="spanish">
+                        <label for="culture_spanish_last">Spanish</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_norse_last" name="cultures_last" value="norse">
+                        <label for="culture_norse_last">Norse</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_greek_last" name="cultures_last" value="greek">
+                        <label for="culture_greek_last">Greek</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="culture_celtic_last" name="cultures_last" value="celtic">
+                        <label for="culture_celtic_last">Celtic</label>
+                    </div>
                 </div>
             </div>
 
-            <!-- Themes Section -->
+            <!-- Themes Selection -->
             <div class="form-section">
                 <h2>Themes</h2>
-                <div class="themes-list" role="group" aria-label="Select Themes">
+                <div class="theme-group" role="group" aria-label="Select Themes">
                     <div class="theme-item">
-                        <input type="checkbox" id="theme_crusader" name="themes" value="crusader">
-                        <label for="theme_crusader">Crusaders</label>
+                        <input type="checkbox" id="theme_noble" name="themes" value="noble">
+                        <label for="theme_noble">Noble</label>
                     </div>
-                    <!-- Add other themes similarly -->
-                    <!-- ... -->
+                    <div class="theme-item">
+                        <input type="checkbox" id="theme_warrior" name="themes" value="warrior">
+                        <label for="theme_warrior">Warrior</label>
+                    </div>
+                    <div class="theme-item">
+                        <input type="checkbox" id="theme_merchant" name="themes" value="merchant">
+                        <label for="theme_merchant">Merchant</label>
+                    </div>
+                    <div class="theme-item">
+                        <input type="checkbox" id="theme_scholar" name="themes" value="scholar">
+                        <label for="theme_scholar">Scholar</label>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Preset Profiles -->
-            <div class="form-section">
-                <h2>Preset Profiles</h2>
-                <div class="preset-buttons">
-                    <button type="button" id="preset_crusader">Crusader</button>
-                    <button type="button" id="preset_royalty">Royalty</button>
-                    <button type="button" id="preset_merchant">Merchant</button>
-                    <button type="button" id="preset_knight">Knight</button>
-                    <button type="button" id="preset_mystic">Mystic</button>
-                </div>
-                <div id="presetDescription" style="display: none;"></div>
-            </div>
-
-            <!-- Shuffle Button -->
-            <div class="form-section">
-                <button type="button" id="shuffleBtn">Shuffle Settings</button>
             </div>
 
             <!-- Pronunciation and Syllable Filter -->
@@ -656,7 +377,6 @@
                     <option value="modern">Modern</option>
                     <option value="medieval">Medieval</option>
                     <option value="mostPronounceable">Most Pronounceable</option>
-                    <option value="fantasy">Fantasy</option>
                 </select>
             </div>
 
@@ -666,15 +386,6 @@
                 <div class="slider-container">
                     <input type="range" id="quantity" name="quantity" min="1" max="100" value="10" aria-label="Number of Names">
                     <span class="slider-value" id="quantityValue">10</span>
-                </div>
-            </div>
-
-            <!-- Search Bar -->
-            <div class="form-section">
-                <label for="search">Search Names:</label>
-                <div id="searchBar">
-                    <input type="text" id="search" placeholder="Search generated names..." aria-label="Search Names">
-                    <span id="searchIcon">🔍</span>
                 </div>
             </div>
 
@@ -692,7 +403,6 @@
             <div class="buttons">
                 <button type="button" id="generateBtn">Generate Names</button>
                 <button type="button" id="clearBtn">Clear Names</button>
-                <button type="button" id="addCultureBtn">Add Custom Culture</button>
             </div>
         </form>
 
@@ -700,7 +410,6 @@
         <div class="export-buttons">
             <button type="button" id="copyBtn">Copy Names</button>
             <button type="button" id="downloadBtn">Download as CSV</button>
-            <button type="button" id="exportPdfBtn">Export to PDF</button>
         </div>
 
         <!-- Results Section -->
@@ -708,43 +417,9 @@
             <p>No names generated yet. Please use the form above to generate names.</p>
         </div>
 
-        <!-- Interactive Map -->
-        <div id="map" aria-label="Interactive Map of Selected Cultures"></div>
-
-        <!-- Character Profile Section -->
-        <div id="profile" aria-live="polite">
-            <!-- Character profiles will appear here -->
-        </div>
-
-        <!-- History Section -->
-        <div id="history">
-            <h2>History</h2>
-            <ul id="historyList">
-                <!-- History items will be appended here -->
-            </ul>
-        </div>
-
-        <!-- Add Custom Culture Modal -->
-        <div id="addCultureModal" class="modal" aria-hidden="true">
-            <div class="modal-content" role="dialog" aria-labelledby="modalTitle">
-                <span class="close-modal" aria-label="Close Modal">&times;</span>
-                <h2 id="modalTitle">Add Custom Culture</h2>
-                <label for="customCultureName">Culture Name:</label>
-                <input type="text" id="customCultureName" placeholder="e.g., Elvish" aria-label="Culture Name">
-
-                <label for="customFirstNames">First Names (comma-separated):</label>
-                <textarea id="customFirstNames" rows="4" placeholder="e.g., Arwen,Eowyn,Lúthien" aria-label="First Names"></textarea>
-
-                <label for="customLastNames">Last Names (comma-separated):</label>
-                <textarea id="customLastNames" rows="4" placeholder="e.g., Silverleaf,Stormwind,Lightbringer" aria-label="Last Names"></textarea>
-
-                <button type="button" id="saveCustomCultureBtn">Save Culture</button>
-            </div>
-        </div>
-
         <script>
-            // Name data structure containing first and last names for each culture and gender
-            let nameData = {
+            // Name data structure containing first and last names for each European culture and gender
+            const nameData = {
                 english: {
                     male: {
                         modern: ["John", "William", "Henry", "Edward", "Richard", "Thomas", "Robert", "James", "Geoffrey", "Edmund"],
@@ -753,7 +428,7 @@
                     },
                     female: {
                         modern: ["Mary", "Elizabeth", "Margaret", "Alice", "Catherine", "Anne", "Joan", "Isabella", "Eleanor", "Matilda"],
-                        medieval: ["Mary", "Elizabeth", "Margaret", "Alice", "Katherine", "Anne", "Joan", "Isabella", "Eleanor", "Matilda"],
+                        medieval: ["Mary", "Elizabeth", "Margaret", "Alice", "Katherine", "Anne", "Joan", "Isabella", "Eleanor", "Mathilde"],
                         mostPronounceable: ["Mary", "Elizabeth", "Margaret", "Alice", "Katherine", "Anne", "Joan", "Isabella", "Eleanor", "Matilda"]
                     },
                     last: ["Smith", "Taylor", "Brown", "Walker", "Wright", "Turner", "Clarke", "Cooper", "Carter", "Miller"]
@@ -771,52 +446,85 @@
                     },
                     last: ["Dupont", "Moreau", "Leroy", "Simon", "Laurent", "Lefebvre", "Martin", "Bernard", "Dubois", "Robert"]
                 },
-                // ... (Other cultures)
-                // Ensure all cultures are defined similarly
-            };
-
-            // Function to load custom cultures from localStorage
-            function loadCustomCultures() {
-                const customCultures = JSON.parse(localStorage.getItem('customCultures')) || [];
-                customCultures.forEach(culture => {
-                    nameData[culture.name.toLowerCase()] = {
-                        male: {
-                            modern: culture.firstNames.male.modern,
-                            medieval: culture.firstNames.male.medieval,
-                            mostPronounceable: culture.firstNames.male.mostPronounceable
-                        },
-                        female: {
-                            modern: culture.firstNames.female.modern,
-                            medieval: culture.firstNames.female.medieval,
-                            mostPronounceable: culture.firstNames.female.mostPronounceable
-                        },
-                        last: culture.lastNames
-                    };
-                });
-            }
-
-            loadCustomCultures();
-
-            // Function to save custom cultures to localStorage
-            function saveCustomCulture(culture) {
-                const customCultures = JSON.parse(localStorage.getItem('customCultures')) || [];
-                customCultures.push(culture);
-                localStorage.setItem('customCultures', JSON.stringify(customCultures));
-                // Update nameData
-                nameData[culture.name.toLowerCase()] = {
+                german: {
                     male: {
-                        modern: culture.firstNames.male.modern,
-                        medieval: culture.firstNames.male.medieval,
-                        mostPronounceable: culture.firstNames.male.mostPronounceable
+                        modern: ["Hans", "Karl", "Heinrich", "Friedrich", "Wilhelm", "Gerhard", "Johann", "Dietrich", "Heinrich", "Otto"],
+                        medieval: ["Hans", "Karl", "Heinrich", "Friedrich", "Wilhelm", "Gerhard", "Johann", "Dietrich", "Heinrich", "Otto"],
+                        mostPronounceable: ["Hans", "Karl", "Henry", "Friedrich", "William", "Gerhard", "John", "Dietrich", "Henry", "Otto"]
                     },
                     female: {
-                        modern: culture.firstNames.female.modern,
-                        medieval: culture.firstNames.female.medieval,
-                        mostPronounceable: culture.firstNames.female.mostPronounceable
+                        modern: ["Anna", "Maria", "Elisabeth", "Margarete", "Gertrud", "Helga", "Ingrid", "Hildegard", "Sabine", "Ursula"],
+                        medieval: ["Anna", "Maria", "Elisabeth", "Margarete", "Gertrud", "Helga", "Ingrid", "Hildegard", "Sabine", "Ursula"],
+                        mostPronounceable: ["Anna", "Maria", "Elizabeth", "Margaret", "Gertrud", "Helga", "Ingrid", "Hildegard", "Sabine", "Ursula"]
                     },
-                    last: culture.lastNames
-                };
-            }
+                    last: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Hoffmann", "Schäfer"]
+                },
+                italian: {
+                    male: {
+                        modern: ["Giovanni", "Lorenzo", "Matteo", "Francesco", "Alessandro", "Giuseppe", "Andrea", "Davide", "Marco", "Nicola"],
+                        medieval: ["Giovanni", "Lorenzo", "Matteo", "Francesco", "Alessandro", "Giuseppe", "Andrea", "Davide", "Marco", "Nicola"],
+                        mostPronounceable: ["Giovanni", "Lorenzo", "Matteo", "Francesco", "Alexander", "Joseph", "Andrew", "David", "Mark", "Nicholas"]
+                    },
+                    female: {
+                        modern: ["Maria", "Giulia", "Sofia", "Martina", "Federica", "Chiara", "Alessia", "Francesca", "Laura", "Elisa"],
+                        medieval: ["Maria", "Giulia", "Sofia", "Martina", "Federica", "Chiara", "Alessia", "Francesca", "Laura", "Elisa"],
+                        mostPronounceable: ["Maria", "Julia", "Sophia", "Martina", "Federica", "Clara", "Alexandra", "Francesca", "Laura", "Elisa"]
+                    },
+                    last: ["Rossi", "Russo", "Ferrari", "Esposito", "Bianchi", "Romano", "Colombo", "Ricci", "Marino", "Greco"]
+                },
+                spanish: {
+                    male: {
+                        modern: ["Juan", "Carlos", "Jorge", "Luis", "Miguel", "Pedro", "Jose", "Manuel", "Antonio", "Francisco"],
+                        medieval: ["Juan", "Carlos", "Jorge", "Luis", "Miguel", "Pedro", "Jose", "Manuel", "Antonio", "Francisco"],
+                        mostPronounceable: ["Juan", "Carlos", "George", "Louis", "Michael", "Peter", "Joseph", "Manuel", "Anthony", "Francis"]
+                    },
+                    female: {
+                        modern: ["Maria", "Carmen", "Josefa", "Isabella", "Lucia", "Ana", "Elena", "Sara", "Patricia", "Laura"],
+                        medieval: ["Maria", "Carmen", "Josefa", "Isabella", "Lucia", "Ana", "Elena", "Sara", "Patricia", "Laura"],
+                        mostPronounceable: ["Maria", "Carmen", "Josephine", "Isabella", "Lucy", "Anna", "Elena", "Sara", "Patricia", "Laura"]
+                    },
+                    last: ["García", "Martínez", "Rodríguez", "López", "González", "Pérez", "Sánchez", "Ramírez", "Cruz", "Morales"]
+                },
+                norse: {
+                    male: {
+                        modern: ["Erik", "Lars", "Nils", "Bjorn", "Gunnar", "Sven", "Thor", "Leif", "Odin", "Harald"],
+                        medieval: ["Erik", "Lars", "Nils", "Bjorn", "Gunnar", "Sven", "Thor", "Leif", "Odin", "Harald"],
+                        mostPronounceable: ["Erik", "Lars", "Nils", "Bjorn", "Gunnar", "Sven", "Thor", "Leif", "Odin", "Harald"]
+                    },
+                    female: {
+                        modern: ["Astrid", "Ingrid", "Sigrid", "Freya", "Helga", "Signe", "Liv", "Karen", "Ragnhild", "Solveig"],
+                        medieval: ["Astrid", "Ingrid", "Sigrid", "Freya", "Helga", "Signe", "Liv", "Karen", "Ragnhild", "Solveig"],
+                        mostPronounceable: ["Astrid", "Ingrid", "Sigrid", "Freya", "Helga", "Signe", "Liv", "Karen", "Ragnhild", "Solveig"]
+                    },
+                    last: ["Andersen", "Johansson", "Nilsson", "Eriksson", "Larsson", "Olsson", "Persson", "Svensson", "Gustafsson", "Olofsson"]
+                },
+                greek: {
+                    male: {
+                        modern: ["Dimitri", "Nikos", "Yannis", "Kostas", "Petros", "Giorgos", "Vasilis", "Christos", "Stavros", "Michalis"],
+                        medieval: ["Dimitri", "Nikos", "Yannis", "Kostas", "Petros", "Giorgos", "Vasilis", "Christos", "Stavros", "Michalis"],
+                        mostPronounceable: ["Dimitri", "Nikos", "Yannis", "Costas", "Peter", "George", "Basil", "Chris", "Stavros", "Michael"]
+                    },
+                    female: {
+                        modern: ["Eleni", "Maria", "Vasiliki", "Katerina", "Georgia", "Sofia", "Ioanna", "Daphne", "Nadia", "Alexandra"],
+                        medieval: ["Eleni", "Maria", "Vasiliki", "Katerina", "Georgia", "Sofia", "Ioanna", "Daphne", "Nadia", "Alexandra"],
+                        mostPronounceable: ["Eleni", "Maria", "Vasiliki", "Catherine", "Georgia", "Sophia", "Joanna", "Daphne", "Nadia", "Alexandra"]
+                    },
+                    last: ["Papadopoulos", "Nikolaidis", "Christodoulou", "Georgiou", "Stavropoulos", "Michalopoulos", "Ioannidis", "Kostopoulos", "Vasilakis", "Petropoulos"]
+                },
+                celtic: {
+                    male: {
+                        modern: ["Aidan", "Brendan", "Connor", "Declan", "Finn", "Liam", "Patrick", "Ronan", "Sean", "Tara"],
+                        medieval: ["Aidan", "Brendan", "Connor", "Declan", "Finn", "Liam", "Patrick", "Ronan", "Sean", "Tara"],
+                        mostPronounceable: ["Aidan", "Brendan", "Connor", "Declan", "Finn", "Liam", "Patrick", "Ronan", "Sean", "Tara"]
+                    },
+                    female: {
+                        modern: ["Aoife", "Brigid", "Caoimhe", "Deirdre", "Fiona", "Maeve", "Niamh", "Orla", "Siobhan", "Sinead"],
+                        medieval: ["Aoife", "Brigid", "Caoimhe", "Deirdre", "Fiona", "Maeve", "Niamh", "Orla", "Siobhan", "Sinead"],
+                        mostPronounceable: ["Aoife", "Brigid", "Kweeva", "Deirdre", "Fiona", "Maeve", "Niamh", "Orla", "Shivawn", "Sheena"]
+                    },
+                    last: ["O'Connor", "O'Neill", "O'Brien", "O'Leary", "O'Sullivan", "O'Reilly", "O'Malley", "O'Donnell", "O'Connor", "O'Grady"]
+                }
+            };
 
             // Elements
             const quantitySlider = document.getElementById('quantity');
@@ -827,79 +535,24 @@
             const clearBtn = document.getElementById('clearBtn');
             const copyBtn = document.getElementById('copyBtn');
             const downloadBtn = document.getElementById('downloadBtn');
-            const exportPdfBtn = document.getElementById('exportPdfBtn');
             const searchInput = document.getElementById('search');
             const toggleDarkMode = document.getElementById('toggleDarkMode');
-            const shuffleBtn = document.getElementById('shuffleBtn');
-            const addCultureBtn = document.getElementById('addCultureBtn');
-            const addCultureModal = document.getElementById('addCultureModal');
-            const closeModalSpan = document.querySelector('.close-modal');
-            const saveCustomCultureBtn = document.getElementById('saveCustomCultureBtn');
-            const historyList = document.getElementById('historyList');
             const resultsDiv = document.getElementById('results');
-            const mapDiv = document.getElementById('map');
-            const profileDiv = document.getElementById('profile');
-            const presetButtons = document.querySelectorAll('.preset-buttons button');
             const customPrefixInput = document.getElementById('customPrefix');
             const customSuffixInput = document.getElementById('customSuffix');
-            const presetDescriptionDiv = document.getElementById('presetDescription');
 
-            // Initialize Map
-            let map = L.map('map').setView([20, 0], 2); // Centered at (20,0), zoom level 2
+            // Initialize slider value displays
+            quantityValue.textContent = quantitySlider.value;
+            syllablesValue.textContent = syllablesSlider.value;
 
-            // Add OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-            }).addTo(map);
+            // Update slider values on input
+            quantitySlider.addEventListener('input', () => {
+                quantityValue.textContent = quantitySlider.value;
+            });
 
-            // Function to highlight selected cultures on the map
-            function updateMap(cultures) {
-                // Clear existing markers
-                if (window.cultureMarkers) {
-                    window.cultureMarkers.forEach(marker => map.removeLayer(marker));
-                }
-                window.cultureMarkers = [];
-
-                // Define coordinates for each culture
-                const cultureCoordinates = {
-                    english: [52.3555, -1.1743], // London
-                    french: [48.8566, 2.3522], // Paris
-                    germanic: [50.1109, 8.6821], // Frankfurt
-                    italian: [41.9028, 12.4964], // Rome
-                    iberian: [40.4168, -3.7038], // Madrid
-                    gaul: [46.6034, 1.8883], // Central France
-                    greek: [37.9838, 23.7275], // Athens
-                    norse: [60.4720, 8.4689], // Oslo
-                    slavic: [55.7558, 37.6173], // Moscow
-                    roman: [41.9028, 12.4964], // Rome
-                    moorish: [31.7917, -7.0926], // Morocco
-                    levant: [31.9522, 35.2332], // Beirut
-                    egypt: [30.0444, 31.2357], // Cairo
-                    anatolian: [39.9334, 32.8597], // Ankara
-                    custom: [] // For custom cultures
-                };
-
-                cultures.forEach(culture => {
-                    const coords = cultureCoordinates[culture];
-                    if (coords) {
-                        const marker = L.marker(coords).addTo(map).bindPopup(`<b>${capitalize(culture)}</b>`);
-                        window.cultureMarkers.push(marker);
-                    }
-                });
-
-                // Adjust map view
-                if (cultures.length > 0) {
-                    const group = new L.featureGroup(window.cultureMarkers);
-                    map.fitBounds(group.getBounds().pad(0.5));
-                } else {
-                    map.setView([20, 0], 2); // Reset to default
-                }
-            }
-
-            // Function to capitalize first letter
-            function capitalize(str) {
-                return str.charAt(0).toUpperCase() + str.slice(1);
-            }
+            syllablesSlider.addEventListener('input', () => {
+                syllablesValue.textContent = syllablesSlider.value;
+            });
 
             // Function to count syllables in a word (simple heuristic)
             function countSyllables(word) {
@@ -913,12 +566,16 @@
 
             // Function to get meaning of a name (placeholder implementation)
             function getNameMeaning(culture, gender, mode, name) {
-                // Predefined meanings
+                // Predefined meanings (can be expanded)
                 const predefinedMeanings = {
                     "john": "God is gracious",
                     "mary": "Bitter",
                     "louis": "Famous warrior",
                     "isabella": "Devoted to God",
+                    "erik": "Eternal ruler",
+                    "elena": "Bright, shining light",
+                    "juan": "God is gracious",
+                    "anna": "Grace",
                     // Add more as needed
                 };
                 const lowerName = name.toLowerCase();
@@ -932,206 +589,146 @@
                 synth.speak(utterThis);
             }
 
-            // Function to get backstory (placeholder implementation)
-            function getBackstory(culture, gender, mode, name) {
-                const backstories = [
-                    `${name} is a renowned ${mode} knight from ${capitalize(culture)}.`,
-                    `${name} is a skilled merchant in the bustling markets of ${capitalize(culture)}.`,
-                    `${name} holds the esteemed title of ${mode} noble in ${capitalize(culture)}.`,
-                    `${name} is a brave crusader, known for valor in the lands of ${capitalize(culture)}.`,
-                    `${name} is a wise scholar, contributing to the knowledge of ${capitalize(culture)}.`,
-                    `${name} is a legendary warrior, feared and respected in ${capitalize(culture)}.`,
-                    `${name} serves as a trusted advisor to the royal family of ${capitalize(culture)}.`,
-                    `${name} is a skilled artisan, crafting masterpieces in ${capitalize(culture)}.`,
-                    `${name} is a fearless explorer, uncovering secrets in the territories of ${capitalize(culture)}.`,
-                    `${name} is a devoted healer, offering solace and care in ${capitalize(culture)}.`
-                ];
-                return backstories[Math.floor(Math.random() * backstories.length)];
-            }
+            // Function to generate names
+            function generateNames() {
+                // Get selected cultures
+                const selectedCulturesFirst = Array.from(document.querySelectorAll('input[name="cultures_first"]:checked')).map(cb => cb.value);
+                const selectedCulturesLast = Array.from(document.querySelectorAll('input[name="cultures_last"]:checked')).map(cb => cb.value);
 
-            // Function to save to history
-            function saveToHistory(entry) {
-                const history = JSON.parse(localStorage.getItem('nameHistory')) || [];
-                history.unshift(entry); // Add to beginning
-                if (history.length > 10) { // Keep last 10 entries
-                    history.pop();
+                // Get selected themes
+                const selectedThemes = Array.from(document.querySelectorAll('input[name="themes"]:checked')).map(cb => cb.value);
+
+                // Get other settings
+                const gender = document.getElementById('gender').value;
+                const mode = document.getElementById('mode').value;
+                const syllableLimit = parseInt(syllablesSlider.value, 10);
+                const quantity = parseInt(quantitySlider.value, 10);
+                const customPrefix = customPrefixInput.value.trim();
+                const customSuffix = customSuffixInput.value.trim();
+
+                // Clear previous results
+                resultsDiv.innerHTML = '';
+
+                // Validate selections
+                if (selectedCulturesFirst.length === 0 && selectedCulturesLast.length === 0) {
+                    resultsDiv.innerHTML = '<p>Please select at least one culture for first or last names.</p>';
+                    return;
                 }
-                localStorage.setItem('nameHistory', JSON.stringify(history));
-                displayHistory();
-            }
 
-            // Function to display history
-            function displayHistory() {
-                const history = JSON.parse(localStorage.getItem('nameHistory')) || [];
-                historyList.innerHTML = '';
-                history.forEach((entry, index) => {
-                    const li = document.createElement('li');
-                    li.style.cursor = 'pointer';
-                    li.textContent = `#${index + 1}: Generated ${entry.names.length} names with First Names from (${entry.culturesFirst.join(', ') || 'None'}) and Last Names from (${entry.culturesLast.join(', ') || 'None'}).`;
-                    li.addEventListener('click', () => {
-                        // Repopulate settings
-                        document.querySelectorAll('input[name="cultures_first"]').forEach(cb => {
-                            cb.checked = entry.culturesFirst.includes(cb.value);
-                        });
-                        document.querySelectorAll('input[name="cultures_last"]').forEach(cb => {
-                            cb.checked = entry.culturesLast.includes(cb.value);
-                        });
-                        document.querySelectorAll('input[name="themes"]').forEach(cb => {
-                            cb.checked = entry.themes.includes(cb.value);
-                        });
-                        document.getElementById('gender').value = entry.gender;
-                        document.getElementById('mode').value = entry.mode;
-                        syllablesSlider.value = entry.syllables;
-                        syllablesValue.textContent = entry.syllables;
-                        quantitySlider.value = entry.quantity;
-                        quantityValue.textContent = entry.quantity;
-
-                        // Custom Prefix and Suffix
-                        customPrefixInput.value = entry.customPrefix || '';
-                        customSuffixInput.value = entry.customSuffix || '';
-
-                        // Highlight on map
-                        highlightPresetOnMap(entry.preset || null);
-
-                        // Display names
-                        resultsDiv.innerHTML = '';
-                        if (entry.names.length === 0) {
-                            resultsDiv.innerHTML = '<p>No names to display.</p>';
-                            return;
+                // Aggregate first names
+                let aggregatedFirstNames = [];
+                selectedCulturesFirst.forEach(culture => {
+                    if (nameData[culture]) {
+                        if (gender === 'male' || gender === 'any') {
+                            aggregatedFirstNames = aggregatedFirstNames.concat(nameData[culture].male[mode]);
                         }
-                        const ul = document.createElement('ul');
-                        entry.names.forEach(name => {
-                            const li = document.createElement('li');
-                            li.textContent = name;
+                        if (gender === 'female' || gender === 'any') {
+                            aggregatedFirstNames = aggregatedFirstNames.concat(nameData[culture].female[mode]);
+                        }
+                    }
+                });
 
-                            // Pronunciation Button
-                            const pronBtn = document.createElement('button');
-                            pronBtn.textContent = '🔊';
-                            pronBtn.classList.add('pronunciation-btn');
-                            pronBtn.setAttribute('aria-label', `Pronounce ${name}`);
-                            pronBtn.addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                getPronunciationAudio(name);
-                            });
-                            li.appendChild(pronBtn);
+                // Aggregate last names
+                let aggregatedLastNames = [];
+                selectedCulturesLast.forEach(culture => {
+                    if (nameData[culture]) {
+                        aggregatedLastNames = aggregatedLastNames.concat(nameData[culture].last);
+                    }
+                });
 
-                            // Tooltip for meaning
-                            const [firstName, lastName] = name.replace(/^(Sir|Lady|Lord|Duke|Earl)\s+/, '').split(' ');
-                            const cultureFirst = getCultureFromName(firstName, entry.culturesFirst);
-                            const cultureLast = getCultureFromName(lastName, entry.culturesLast);
-                            const meaningFirst = getNameMeaning(cultureFirst, entry.gender, entry.mode, firstName);
-                            const meaningLast = getNameMeaning(cultureLast, entry.gender, entry.mode, lastName);
-
-                            li.title = `First Name Meaning: ${meaningFirst}\nLast Name Meaning: ${meaningLast}`;
-                            li.setAttribute('aria-describedby', `profile_${index}_${name}`);
-
-                            // Toggle favorite on click
-                            li.addEventListener('click', () => {
-                                li.classList.toggle('favorite');
-                                const isFavorited = li.classList.contains('favorite');
-                                li.setAttribute('aria-pressed', isFavorited);
-                            });
-
-                            // Toggle favorite on Enter key
-                            li.addEventListener('keypress', (e) => {
-                                if (e.key === 'Enter') {
-                                    li.click();
-                                }
-                            });
-
-                            ul.appendChild(li);
-                        });
-                        resultsDiv.appendChild(ul);
+                // Apply themes (modify names based on themes)
+                if (selectedThemes.length > 0) {
+                    selectedThemes.forEach(theme => {
+                        switch(theme) {
+                            case 'noble':
+                                // Example: Add noble titles
+                                aggregatedFirstNames = aggregatedFirstNames.map(name => `Sir ${name}`);
+                                aggregatedLastNames = aggregatedLastNames.map(name => `${name} of House`);
+                                break;
+                            case 'warrior':
+                                // Example: Add warrior-related suffixes
+                                aggregatedFirstNames = aggregatedFirstNames.map(name => `${name} the Brave`);
+                                aggregatedLastNames = aggregatedLastNames.map(name => `Steel ${name}`);
+                                break;
+                            case 'merchant':
+                                // Example: Add merchant-related prefixes
+                                aggregatedFirstNames = aggregatedFirstNames.map(name => `Merchant ${name}`);
+                                aggregatedLastNames = aggregatedLastNames.map(name => `${name} Trader`);
+                                break;
+                            case 'scholar':
+                                // Example: Add scholarly titles
+                                aggregatedFirstNames = aggregatedFirstNames.map(name => `Master ${name}`);
+                                aggregatedLastNames = aggregatedLastNames.map(name => `${name} the Wise`);
+                                break;
+                            default:
+                                break;
+                        }
                     });
-                    historyList.appendChild(li);
-                });
-            }
+                }
 
-            // Function to get themes data
-            function getThemeData(theme) {
-                const themes = {
-                    crusader: {
-                        firstNames: ["Godric", "William", "Richard", "Robert", "Philip"],
-                        lastNames: ["Crusader", "Knight", "Warrior", "Paladin", "Templar"]
-                    },
-                    royalty: {
-                        firstNames: ["Arthur", "Elizabeth", "Catherine", "Henry", "Margaret"],
-                        lastNames: ["Kingston", "Regent", "Duke", "Marquis", "Baron"]
-                    },
-                    merchant: {
-                        firstNames: ["Simon", "Edward", "Richard", "Henry", "Thomas"],
-                        lastNames: ["Goldsmith", "Merchant", "Trader", "Merchantson", "Baker"]
-                    },
-                    knight: {
-                        firstNames: ["Sir Lancelot", "Sir Galahad", "Sir Percival", "Sir Tristan", "Sir Gawain"],
-                        lastNames: ["Steelheart", "Ironfist", "Braveblade", "Nobleheart", "Shieldbearer"]
-                    },
-                    mystic: {
-                        firstNames: ["Merlin", "Morgana", "Elara", "Seraphina", "Thalassa"],
-                        lastNames: ["Shadowmancer", "Starweaver", "Nightwhisper", "Moonseer", "Dreambinder"]
-                    }
-                };
-                return themes[theme] || null;
-            }
+                // Remove duplicates
+                aggregatedFirstNames = [...new Set(aggregatedFirstNames)];
+                aggregatedLastNames = [...new Set(aggregatedLastNames)];
 
-            // Function to export to PDF
-            async function exportToPDF() {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+                // Filter by syllable count
+                aggregatedFirstNames = aggregatedFirstNames.filter(name => countSyllables(name) <= syllableLimit);
+                aggregatedLastNames = aggregatedLastNames.filter(name => countSyllables(name) <= syllableLimit);
 
-                let y = 10;
-                doc.setFontSize(18);
-                doc.text("Medieval Names Generated", 105, y, { align: "center" });
-                y += 10;
-                doc.setFontSize(12);
-
-                const names = [];
-                resultsDiv.querySelectorAll('li').forEach(li => {
-                    names.push(li.firstChild.textContent);
-                });
-
-                if (names.length === 0) {
-                    alert('No names to export.');
+                if (aggregatedFirstNames.length === 0 || aggregatedLastNames.length === 0) {
+                    resultsDiv.innerHTML = '<p>No names match the syllable criteria.</p>';
                     return;
                 }
 
-                names.forEach(name => {
-                    if (y > 280) { // Prevent overflow
-                        doc.addPage();
-                        y = 10;
+                // Calculate total possible combinations
+                const totalCombinations = aggregatedFirstNames.length * aggregatedLastNames.length;
+                const finalQuantity = Math.min(quantity, totalCombinations);
+
+                // Generate unique names
+                const namesSet = new Set();
+                while (namesSet.size < finalQuantity) {
+                    const first = aggregatedFirstNames[Math.floor(Math.random() * aggregatedFirstNames.length)];
+                    const last = aggregatedLastNames[Math.floor(Math.random() * aggregatedLastNames.length)];
+                    let fullName = `${first} ${last}`;
+
+                    // Add custom prefix and suffix
+                    if (customPrefix) {
+                        fullName = `${customPrefix} ${fullName}`;
                     }
-                    doc.text(name, 10, y);
-                    y += 10;
-                });
+                    if (customSuffix) {
+                        fullName = `${fullName} ${customSuffix}`;
+                    }
 
-                doc.save(`medieval_names_${new Date().toISOString().replace(/[:.-]/g, "")}.pdf`);
-            }
-
-            // Function to export names to CSV
-            function exportToCSV() {
-                const names = [];
-                resultsDiv.querySelectorAll('li').forEach(li => {
-                    names.push(li.firstChild.textContent);
-                });
-
-                if (names.length === 0) {
-                    alert('No names to download.');
-                    return;
+                    namesSet.add(fullName);
                 }
 
-                let csvContent = "data:text/csv;charset=utf-8,";
-                names.forEach(name => {
-                    csvContent += `"${name}"\n`;
+                const namesList = Array.from(namesSet);
+                const ul = document.createElement('ul');
+
+                namesList.forEach(name => {
+                    const li = document.createElement('li');
+                    li.textContent = name;
+
+                    // Pronunciation Button
+                    const pronBtn = document.createElement('button');
+                    pronBtn.textContent = '🔊';
+                    pronBtn.classList.add('pronunciation-btn');
+                    pronBtn.setAttribute('aria-label', `Pronounce ${name}`);
+                    pronBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        getPronunciationAudio(name);
+                    });
+                    li.appendChild(pronBtn);
+
+                    ul.appendChild(li);
                 });
 
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
-                link.setAttribute("download", `medieval_names_${timestamp}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                resultsDiv.appendChild(ul);
+            }
+
+            // Function to clear results
+            function clearNames() {
+                resultsDiv.innerHTML = '<p>No names generated yet. Please use the form above to generate names.</p>';
+                searchInput.value = '';
             }
 
             // Function to copy names to clipboard
@@ -1153,677 +750,43 @@
                 });
             }
 
-            // Function to generate names
-            function generateNames() {
-                const selectedCulturesFirst = Array.from(document.querySelectorAll('input[name="cultures_first"]:checked')).map(cb => cb.value);
-                const selectedCulturesLast = Array.from(document.querySelectorAll('input[name="cultures_last"]:checked')).map(cb => cb.value);
-                const selectedThemes = Array.from(document.querySelectorAll('input[name="themes"]:checked')).map(cb => cb.value);
-                const gender = document.getElementById('gender').value;
-                const mode = document.getElementById('mode').value;
-                const syllableLimit = parseInt(syllablesSlider.value, 10);
-                const quantity = parseInt(quantitySlider.value, 10);
-                const customPrefix = customPrefixInput.value.trim();
-                const customSuffix = customSuffixInput.value.trim();
+            // Function to download names as CSV
+            function downloadCSV() {
+                const names = [];
+                resultsDiv.querySelectorAll('li').forEach(li => {
+                    names.push(li.firstChild.textContent);
+                });
 
-                // Clear previous results
-                resultsDiv.innerHTML = '';
-                profileDiv.innerHTML = '';
-
-                if (selectedCulturesFirst.length === 0 && selectedCulturesLast.length === 0) {
-                    resultsDiv.innerHTML = '<p>Please select at least one culture for first or last names to generate names.</p>';
+                if (names.length === 0) {
+                    alert('No names to download.');
                     return;
                 }
 
-                // Aggregate first names from selected first name cultures
-                let aggregatedFirstNames = [];
-                selectedCulturesFirst.forEach(culture => {
-                    const cultureData = nameData[culture];
-                    if (cultureData) {
-                        // Aggregate first names based on gender and mode
-                        if (gender === 'male') {
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern.map(name => `${name} Storm`));
-                            }
-                        } else if (gender === 'female') {
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.modern.map(name => `Lady ${name}`));
-                            }
-                        } else { // Any
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern, cultureData.female.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.medieval, cultureData.female.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.mostPronounceable, cultureData.female.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(
-                                    cultureData.male.modern.map(name => `${name} Storm`),
-                                    cultureData.female.modern.map(name => `Lady ${name}`)
-                                );
-                            }
-                        }
-                    }
+                let csvContent = "data:text/csv;charset=utf-8,";
+                names.forEach(name => {
+                    csvContent += `"${name}"\n`;
                 });
 
-                // Aggregate last names from selected last name cultures
-                let aggregatedLastNames = [];
-                selectedCulturesLast.forEach(culture => {
-                    const cultureData = nameData[culture];
-                    if (cultureData) {
-                        // Aggregate last names
-                        aggregatedLastNames = aggregatedLastNames.concat(cultureData.last);
-                    }
-                });
-
-                // Aggregate names from selected themes
-                selectedThemes.forEach(theme => {
-                    const themeData = getThemeData(theme);
-                    if (themeData) {
-                        aggregatedFirstNames = aggregatedFirstNames.concat(themeData.firstNames);
-                        aggregatedLastNames = aggregatedLastNames.concat(themeData.lastNames);
-                    }
-                });
-
-                // If no first names selected, use all first names
-                if (aggregatedFirstNames.length === 0 && selectedCulturesLast.length > 0) {
-                    // Aggregate all first names from all cultures
-                    Object.keys(nameData).forEach(culture => {
-                        const cultureData = nameData[culture];
-                        if (gender === 'male') {
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern.map(name => `${name} Storm`));
-                            }
-                        } else if (gender === 'female') {
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.female.modern.map(name => `Lady ${name}`));
-                            }
-                        } else { // Any
-                            if (mode === 'modern') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.modern, cultureData.female.modern);
-                            } else if (mode === 'medieval') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.medieval, cultureData.female.medieval);
-                            } else if (mode === 'mostPronounceable') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(cultureData.male.mostPronounceable, cultureData.female.mostPronounceable);
-                            } else if (mode === 'fantasy') {
-                                aggregatedFirstNames = aggregatedFirstNames.concat(
-                                    cultureData.male.modern.map(name => `${name} Storm`),
-                                    cultureData.female.modern.map(name => `Lady ${name}`)
-                                );
-                            }
-                        }
-                    });
-                }
-
-                // If no last names selected, use all last names
-                if (aggregatedLastNames.length === 0 && selectedCulturesFirst.length > 0) {
-                    // Aggregate all last names from all cultures
-                    Object.keys(nameData).forEach(culture => {
-                        const cultureData = nameData[culture];
-                        aggregatedLastNames = aggregatedLastNames.concat(cultureData.last);
-                    });
-                }
-
-                // If both first and last names are empty after aggregation, show message
-                if (aggregatedFirstNames.length === 0 && aggregatedLastNames.length === 0) {
-                    resultsDiv.innerHTML = '<p>No names available for the selected options.</p>';
-                    return;
-                }
-
-                // Filter names based on syllable count
-                if (aggregatedFirstNames.length > 0) {
-                    aggregatedFirstNames = aggregatedFirstNames.filter(name => countSyllables(name) <= syllableLimit);
-                }
-                if (aggregatedLastNames.length > 0) {
-                    aggregatedLastNames = aggregatedLastNames.filter(name => countSyllables(name) <= syllableLimit);
-                }
-
-                if (aggregatedFirstNames.length === 0 || aggregatedLastNames.length === 0) {
-                    resultsDiv.innerHTML = '<p>No names match the syllable criteria.</p>';
-                    return;
-                }
-
-                // Calculate total possible unique combinations
-                const totalCombinations = aggregatedFirstNames.length * aggregatedLastNames.length;
-                let finalQuantity = quantity;
-                if (quantity > totalCombinations) {
-                    finalQuantity = totalCombinations;
-                }
-
-                const namesSet = new Set();
-                while (namesSet.size < finalQuantity) {
-                    const first = aggregatedFirstNames[Math.floor(Math.random() * aggregatedFirstNames.length)];
-                    const last = aggregatedLastNames[Math.floor(Math.random() * aggregatedLastNames.length)];
-                    let fullName = `${first} ${last}`;
-
-                    // Add custom prefix and suffix
-                    if (customPrefix) {
-                        fullName = `${customPrefix} ${fullName}`;
-                    }
-                    if (customSuffix) {
-                        fullName = `${fullName} ${customSuffix}`;
-                    }
-
-                    namesSet.add(fullName);
-                }
-
-                const namesList = Array.from(namesSet);
-                const ul = document.createElement('ul');
-
-                namesList.forEach((name, index) => {
-                    const li = document.createElement('li');
-                    li.textContent = name;
-
-                    // Pronunciation Button
-                    const pronBtn = document.createElement('button');
-                    pronBtn.textContent = '🔊';
-                    pronBtn.classList.add('pronunciation-btn');
-                    pronBtn.setAttribute('aria-label', `Pronounce ${name}`);
-                    pronBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        getPronunciationAudio(name);
-                    });
-                    li.appendChild(pronBtn);
-
-                    // Tooltip for meaning
-                    const [firstName, lastName] = name.replace(/^(Sir|Lady|Lord|Duke|Earl)\s+/, '').split(' ');
-                    const cultureFirst = getCultureFromName(firstName, selectedCulturesFirst);
-                    const cultureLast = getCultureFromName(lastName, selectedCulturesLast);
-                    const meaningFirst = getNameMeaning(cultureFirst, gender, mode, firstName);
-                    const meaningLast = getNameMeaning(cultureLast, gender, mode, lastName);
-
-                    li.title = `First Name Meaning: ${meaningFirst}\nLast Name Meaning: ${meaningLast}`;
-
-                    // Toggle favorite on click
-                    li.addEventListener('click', () => {
-                        li.classList.toggle('favorite');
-                        const isFavorited = li.classList.contains('favorite');
-                        li.setAttribute('aria-pressed', isFavorited);
-                    });
-
-                    // Toggle favorite on Enter key
-                    li.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            li.click();
-                        }
-                    });
-
-                    ul.appendChild(li);
-                });
-
-                resultsDiv.innerHTML = '';
-                resultsDiv.appendChild(ul);
-
-                // Generate Character Profile for the first name
-                if (namesList.length > 0) {
-                    const firstName = namesList[0].split(' ')[0].replace(/^(Sir|Lady|Lord|Duke|Earl)/, '').trim();
-                    const culture = getCultureFromName(firstName, selectedCulturesFirst);
-                    const profile = `
-                        <h3>Character Profile for ${namesList[0]}</h3>
-                        <p>${getBackstory(culture, gender, mode, firstName)}</p>
-                    `;
-                    profileDiv.innerHTML = profile;
-                }
-
-                // Save to history
-                saveToHistory({
-                    culturesFirst: selectedCulturesFirst,
-                    culturesLast: selectedCulturesLast,
-                    themes: selectedThemes,
-                    gender: gender,
-                    mode: mode,
-                    syllables: syllableLimit,
-                    quantity: finalQuantity,
-                    names: namesList,
-                    customPrefix: customPrefix,
-                    customSuffix: customSuffix,
-                    preset: null // Will be set if generated via preset
-                });
-
-                // Update map with selected cultures
-                updateMap(selectedCulturesFirst.concat(selectedCulturesLast));
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
+                link.setAttribute("download", `medieval_european_names_${timestamp}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             }
 
-            // Function to get culture from name (simplistic approach)
-            function getCultureFromName(name, cultures) {
-                // This function can be improved with more accurate mapping
-                for (let culture of cultures) {
-                    if (nameData[culture].male.modern.includes(name) || nameData[culture].female.modern.includes(name)) {
-                        return culture;
-                    }
-                }
-                return cultures[0] || 'english'; // Default to first selected culture or English
-            }
-
-            // Function to highlight preset profiles on the map
-            function highlightPresetOnMap(preset) {
-                if (preset) {
-                    highlightPresetOnMapDetails(preset);
-                } else {
-                    updateMap([]);
-                }
-            }
-
-            // Function to highlight cultures based on preset
-            function highlightPresetOnMapDetails(preset) {
-                const presetCulturesMap = {
-                    crusader: ['english', 'french', 'roman'],
-                    royalty: ['english', 'french', 'italian'],
-                    merchant: ['english', 'french', 'germanic'],
-                    knight: ['english', 'norse', 'roman'],
-                    mystic: ['greek', 'slavic', 'gaul']
-                };
-                updateMap(presetCulturesMap[preset] || []);
-            }
-
-            // Function to show preset description
-            function showPresetDescription(preset) {
-                const descriptions = {
-                    crusader: "Crusaders were knights who took part in the religious wars during the medieval period.",
-                    royalty: "Royalty includes kings, queens, dukes, and other noble titles associated with governance and prestige.",
-                    merchant: "Merchants were vital to medieval economies, engaging in trade and commerce across regions.",
-                    knight: "Knights were mounted warriors serving lords, known for their chivalry and combat skills.",
-                    mystic: "Mystics are individuals with deep spiritual or magical connections, often seen as wise and enigmatic."
-                };
-                const description = descriptions[preset] || '';
-                if (description) {
-                    presetDescriptionDiv.innerHTML = `<p>${description}</p>`;
-                    presetDescriptionDiv.style.display = 'block';
-                } else {
-                    presetDescriptionDiv.style.display = 'none';
-                }
-            }
-
-            // Function to handle preset button clicks
-            presetButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const preset = button.id.replace('preset_', '');
-                    // Define preset configurations
-                    const presetConfigs = {
-                        crusader: {
-                            culturesFirst: ['english', 'french', 'roman'],
-                            culturesLast: ['english', 'french', 'roman'],
-                            themes: ['crusader'],
-                            gender: 'male',
-                            mode: 'medieval',
-                            syllables: 3,
-                            quantity: 10,
-                            customPrefix: 'Sir',
-                            customSuffix: 'the Brave',
-                            preset: 'crusader'
-                        },
-                        royalty: {
-                            culturesFirst: ['english', 'french', 'italian'],
-                            culturesLast: ['english', 'french', 'italian'],
-                            themes: ['royalty'],
-                            gender: 'female',
-                            mode: 'modern',
-                            syllables: 2,
-                            quantity: 10,
-                            customPrefix: 'Lady',
-                            customSuffix: 'of Grace',
-                            preset: 'royalty'
-                        },
-                        merchant: {
-                            culturesFirst: ['english', 'french', 'germanic'],
-                            culturesLast: ['english', 'french', 'germanic'],
-                            themes: ['merchant'],
-                            gender: 'any',
-                            mode: 'modern',
-                            syllables: 3,
-                            quantity: 15,
-                            customPrefix: '',
-                            customSuffix: '',
-                            preset: 'merchant'
-                        },
-                        knight: {
-                            culturesFirst: ['english', 'norse', 'roman'],
-                            culturesLast: ['english', 'norse', 'roman'],
-                            themes: ['knight'],
-                            gender: 'male',
-                            mode: 'medieval',
-                            syllables: 2,
-                            quantity: 10,
-                            customPrefix: 'Sir',
-                            customSuffix: 'the Valiant',
-                            preset: 'knight'
-                        },
-                        mystic: {
-                            culturesFirst: ['greek', 'slavic', 'gaul'],
-                            culturesLast: ['greek', 'slavic', 'gaul'],
-                            themes: ['mystic'],
-                            gender: 'any',
-                            mode: 'fantasy',
-                            syllables: 4,
-                            quantity: 8,
-                            customPrefix: '',
-                            customSuffix: '',
-                            preset: 'mystic'
-                        }
-                    };
-
-                    const config = presetConfigs[preset];
-                    if (config) {
-                        // Set cultures
-                        document.querySelectorAll('input[name="cultures_first"]').forEach(cb => {
-                            cb.checked = config.culturesFirst.includes(cb.value);
-                        });
-                        document.querySelectorAll('input[name="cultures_last"]').forEach(cb => {
-                            cb.checked = config.culturesLast.includes(cb.value);
-                        });
-                        // Set themes
-                        document.querySelectorAll('input[name="themes"]').forEach(cb => {
-                            cb.checked = config.themes.includes(cb.value);
-                        });
-                        // Set gender and mode
-                        document.getElementById('gender').value = config.gender;
-                        document.getElementById('mode').value = config.mode;
-                        // Set syllables and quantity
-                        syllablesSlider.value = config.syllables;
-                        syllablesValue.textContent = config.syllables;
-                        quantitySlider.value = config.quantity;
-                        quantityValue.textContent = config.quantity;
-                        // Set custom prefix and suffix
-                        customPrefixInput.value = config.customPrefix;
-                        customSuffixInput.value = config.customSuffix;
-                        // Highlight on map
-                        highlightPresetOnMapDetails(preset);
-                        // Show preset description
-                        showPresetDescription(preset);
-                        // Generate names
-                        generateNames();
-                    }
-                });
-            });
-
-            // Function to shuffle settings
-            function shuffleSettings() {
-                // Shuffle first name cultures
-                const cultureCheckboxesFirst = document.querySelectorAll('input[name="cultures_first"]');
-                cultureCheckboxesFirst.forEach(cb => cb.checked = false);
-                const cultureArrayFirst = Array.from(cultureCheckboxesFirst);
-                const randomCulturesFirst = [];
-                // Randomly select 1 to 3 first name cultures
-                const numCulturesFirst = Math.floor(Math.random() * 3) + 1;
-                while (randomCulturesFirst.length < numCulturesFirst) {
-                    const randomCulture = cultureArrayFirst[Math.floor(Math.random() * cultureArrayFirst.length)];
-                    if (!randomCulturesFirst.includes(randomCulture)) {
-                        randomCulturesFirst.push(randomCulture);
-                        randomCulture.checked = true;
-                    }
-                }
-
-                // Shuffle last name cultures
-                const cultureCheckboxesLast = document.querySelectorAll('input[name="cultures_last"]');
-                cultureCheckboxesLast.forEach(cb => cb.checked = false);
-                const cultureArrayLast = Array.from(cultureCheckboxesLast);
-                const randomCulturesLast = [];
-                // Randomly select 1 to 3 last name cultures
-                const numCulturesLast = Math.floor(Math.random() * 3) + 1;
-                while (randomCulturesLast.length < numCulturesLast) {
-                    const randomCulture = cultureArrayLast[Math.floor(Math.random() * cultureArrayLast.length)];
-                    if (!randomCulturesLast.includes(randomCulture)) {
-                        randomCulturesLast.push(randomCulture);
-                        randomCulture.checked = true;
-                    }
-                }
-
-                // Shuffle themes
-                const themeCheckboxes = document.querySelectorAll('input[name="themes"]');
-                themeCheckboxes.forEach(cb => cb.checked = false);
-                const themeArray = Array.from(themeCheckboxes);
-                const randomThemes = [];
-                // Randomly select 0 to 2 themes
-                const numThemes = Math.floor(Math.random() * 3); // 0,1,2
-                while (randomThemes.length < numThemes) {
-                    const randomTheme = themeArray[Math.floor(Math.random() * themeArray.length)];
-                    if (!randomThemes.includes(randomTheme)) {
-                        randomThemes.push(randomTheme);
-                        randomTheme.checked = true;
-                    }
-                }
-
-                // Shuffle gender
-                const genderSelect = document.getElementById('gender');
-                const genders = ['any', 'male', 'female'];
-                genderSelect.value = genders[Math.floor(Math.random() * genders.length)];
-
-                // Shuffle mode
-                const modeSelect = document.getElementById('mode');
-                const modes = ['modern', 'medieval', 'mostPronounceable', 'fantasy'];
-                modeSelect.value = modes[Math.floor(Math.random() * modes.length)];
-
-                // Shuffle syllables
-                syllablesSlider.value = Math.floor(Math.random() * 5) + 1;
-                syllablesValue.textContent = syllablesSlider.value;
-
-                // Shuffle number of names
-                quantitySlider.value = Math.floor(Math.random() * 100) + 1;
-                quantityValue.textContent = quantitySlider.value;
-
-                // Shuffle custom prefix and suffix
-                customPrefixInput.value = '';
-                customSuffixInput.value = '';
-
-                // Optionally, hide preset description if any
-                presetDescriptionDiv.style.display = 'none';
-            }
-
-            // Function to open modal
-            function openModal() {
-                addCultureModal.style.display = "block";
-                addCultureModal.setAttribute('aria-hidden', 'false');
-            }
-
-            // Function to close modal
-            function closeModal() {
-                addCultureModal.style.display = "none";
-                addCultureModal.setAttribute('aria-hidden', 'true');
-            }
-
-            // Event listener for closing modal
-            closeModalSpan.onclick = function() {
-                closeModal();
-            }
-
-            window.onclick = function(event) {
-                if (event.target == addCultureModal) {
-                    closeModal();
-                }
-            }
-
-            // Function to save custom culture
-            function saveCustomCulture() {
-                const cultureName = document.getElementById('customCultureName').value.trim();
-                const firstNamesInput = document.getElementById('customFirstNames').value.trim();
-                const lastNamesInput = document.getElementById('customLastNames').value.trim();
-
-                if (!cultureName || !firstNamesInput || !lastNamesInput) {
-                    alert('Please fill in all fields.');
-                    return;
-                }
-
-                const firstNamesArray = firstNamesInput.split(',').map(name => name.trim()).filter(name => name);
-                const lastNamesArray = lastNamesInput.split(',').map(name => name.trim()).filter(name => name);
-
-                if (firstNamesArray.length === 0 || lastNamesArray.length === 0) {
-                    alert('Please provide at least one first and one last name.');
-                    return;
-                }
-
-                // For simplicity, using same names for all modes
-                const culture = {
-                    name: cultureName,
-                    firstNames: {
-                        male: {
-                            modern: firstNamesArray,
-                            medieval: firstNamesArray,
-                            mostPronounceable: firstNamesArray
-                        },
-                        female: {
-                            modern: firstNamesArray,
-                            medieval: firstNamesArray,
-                            mostPronounceable: firstNamesArray
-                        }
-                    },
-                    lastNames: lastNamesArray
-                };
-
-                saveCustomCulture(culture);
-                alert(`Culture "${cultureName}" added successfully!`);
-                closeModal();
-                // Dynamically add the new culture to the form without reloading
-                addCultureToForm(culture);
-            }
-
-            // Function to dynamically add custom culture to the form
-            function addCultureToForm(culture) {
-                // Add to first name cultures
-                const firstNameGroup = document.querySelector('.form-section:nth-of-type(1) .checkbox-group');
-                const newFirstCheckbox = document.createElement('div');
-                newFirstCheckbox.classList.add('checkbox-item');
-                newFirstCheckbox.innerHTML = `
-                    <input type="checkbox" id="culture_${culture.name.toLowerCase()}_first" name="cultures_first" value="${culture.name.toLowerCase()}">
-                    <label for="culture_${culture.name.toLowerCase()}_first">${capitalize(culture.name)}</label>
-                `;
-                firstNameGroup.appendChild(newFirstCheckbox);
-
-                // Add to last name cultures
-                const lastNameGroup = document.querySelector('.form-section:nth-of-type(2) .checkbox-group');
-                const newLastCheckbox = document.createElement('div');
-                newLastCheckbox.classList.add('checkbox-item');
-                newLastCheckbox.innerHTML = `
-                    <input type="checkbox" id="culture_${culture.name.toLowerCase()}_last" name="cultures_last" value="${culture.name.toLowerCase()}">
-                    <label for="culture_${culture.name.toLowerCase()}_last">${capitalize(culture.name)}</label>
-                `;
-                lastNameGroup.appendChild(newLastCheckbox);
-            }
-
-            // Function to generate family names (Ancestry and Family Name Options)
-            function generateFamily() {
-                const selectedCulturesFirst = Array.from(document.querySelectorAll('input[name="cultures_first"]:checked')).map(cb => cb.value);
-                const selectedCulturesLast = Array.from(document.querySelectorAll('input[name="cultures_last"]:checked')).map(cb => cb.value);
-                const selectedThemes = Array.from(document.querySelectorAll('input[name="themes"]:checked')).map(cb => cb.value);
-                const gender = document.getElementById('gender').value;
-                const mode = document.getElementById('mode').value;
-                const syllableLimit = parseInt(syllablesSlider.value, 10);
-                const quantity = parseInt(quantitySlider.value, 10);
-                const customPrefix = customPrefixInput.value.trim();
-                const customSuffix = customSuffixInput.value.trim();
-
-                // Generate family names
-                const familySize = Math.min(quantity, 5); // Limit family size to 5
-                const familyNames = [];
-
-                for (let i = 0; i < familySize; i++) {
-                    let name = '';
-                    // Alternate gender if any
-                    const currentGender = gender === 'any' ? (i % 2 === 0 ? 'male' : 'female') : gender;
-                    // Generate name based on settings
-                    const tempSelectGender = document.getElementById('gender').value;
-                    document.getElementById('gender').value = currentGender;
-                    generateNames();
-                    const generatedNames = Array.from(resultsDiv.querySelectorAll('li')).map(li => li.firstChild.textContent);
-                    if (generatedNames.length > 0) {
-                        familyNames.push(generatedNames[0]);
-                    }
-                    // Reset gender
-                    document.getElementById('gender').value = tempSelectGender;
-                }
-
-                // Display family names
-                resultsDiv.innerHTML = '';
-                const ul = document.createElement('ul');
-                familyNames.forEach(name => {
-                    const li = document.createElement('li');
-                    li.textContent = name;
-
-                    // Pronunciation Button
-                    const pronBtn = document.createElement('button');
-                    pronBtn.textContent = '🔊';
-                    pronBtn.classList.add('pronunciation-btn');
-                    pronBtn.setAttribute('aria-label', `Pronounce ${name}`);
-                    pronBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        getPronunciationAudio(name);
-                    });
-                    li.appendChild(pronBtn);
-
-                    // Tooltip for meaning
-                    const [firstName, lastName] = name.replace(/^(Sir|Lady|Lord|Duke|Earl)\s+/, '').split(' ');
-                    const cultureFirst = getCultureFromName(firstName, selectedCulturesFirst);
-                    const cultureLast = getCultureFromName(lastName, selectedCulturesLast);
-                    const meaningFirst = getNameMeaning(cultureFirst, gender, mode, firstName);
-                    const meaningLast = getNameMeaning(cultureLast, gender, mode, lastName);
-
-                    li.title = `First Name Meaning: ${meaningFirst}\nLast Name Meaning: ${meaningLast}`;
-
-                    // Toggle favorite on click
-                    li.addEventListener('click', () => {
-                        li.classList.toggle('favorite');
-                        const isFavorited = li.classList.contains('favorite');
-                        li.setAttribute('aria-pressed', isFavorited);
-                    });
-
-                    // Toggle favorite on Enter key
-                    li.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            li.click();
-                        }
-                    });
-
-                    ul.appendChild(li);
-                });
-                resultsDiv.appendChild(ul);
-            }
-
-            // Event Listeners
-            generateBtn.addEventListener('click', generateNames);
-            clearBtn.addEventListener('click', () => {
-                resultsDiv.innerHTML = '<p>No names generated yet. Please use the form above to generate names.</p>';
-                profileDiv.innerHTML = '';
-            });
-            copyBtn.addEventListener('click', copyNames);
-            downloadBtn.addEventListener('click', exportToCSV);
-            exportPdfBtn.addEventListener('click', exportToPDF);
+            // Function to handle dark mode toggle
             toggleDarkMode.addEventListener('change', () => {
                 document.body.classList.toggle('dark-mode');
             });
-            shuffleBtn.addEventListener('click', shuffleSettings);
-            addCultureBtn.addEventListener('click', openModal);
-            saveCustomCultureBtn.addEventListener('click', saveCustomCulture);
 
-            // Initialize slider value displays
-            quantityValue.textContent = quantitySlider.value;
-            syllablesValue.textContent = syllablesSlider.value;
-
-            // Function to display history on page load
-            window.onload = function() {
-                displayHistory();
-            }
+            // Event Listeners
+            generateBtn.addEventListener('click', generateNames);
+            clearBtn.addEventListener('click', clearNames);
+            copyBtn.addEventListener('click', copyNames);
+            downloadBtn.addEventListener('click', downloadCSV);
 
             // Implementing Search Functionality
             searchInput.addEventListener('input', () => {
@@ -1834,7 +797,7 @@
                 lis.forEach(li => {
                     const text = li.textContent.toLowerCase();
                     if (text.includes(filter)) {
-                        li.style.display = '';
+                        li.style.display = 'flex';
                     } else {
                         li.style.display = 'none';
                     }
